@@ -16,7 +16,9 @@ namespace Infastructure.Data
 
         public async Task<Doctor> GetDoctorByIdAsync(int id)
         {
-            return await _context.Doctors.Include(d => d.Title).FirstOrDefaultAsync(x=>x.Id==id);
+            return await _context.Doctors
+                        .Include(d => d.Title)
+                        .FirstOrDefaultAsync(x=>x.Id==id);
         }
 
         public async Task<IReadOnlyList<Doctor>> GetDoctorsAsync()
