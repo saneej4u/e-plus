@@ -29,6 +29,7 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IDoctorRepository, DoctorRepository>();
+            services.AddScoped(typeof(IGenericRepository<>),(typeof(GenericRepository<>)));
             services.AddControllers();
             services.AddDbContext<ClinicContext>(x => 
                     x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
