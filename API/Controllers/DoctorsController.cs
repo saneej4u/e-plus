@@ -4,19 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Errors;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
 using Infastructure.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class DoctorsController : ControllerBase
+    public class DoctorsController : BaseApiController
     {
 
         private readonly IGenericRepository<Doctor> _doctorRepo;
@@ -41,10 +41,17 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<DoctorToReturnDto>> GetDoctor(int id)
         {
             var spec = new DoctorWithTitles(id);
             var doctor = await _doctorRepo.GetEntityWithSpec(spec);
+
+            if(doctor == null)
+            {
+                return NotFound(new ApiResponse(404));
+            }
 
             return _mapper.Map<Doctor, DoctorToReturnDto>(doctor);
         }
